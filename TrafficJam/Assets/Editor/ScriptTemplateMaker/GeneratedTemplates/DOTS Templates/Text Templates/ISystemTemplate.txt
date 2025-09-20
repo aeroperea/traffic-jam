@@ -1,0 +1,52 @@
+﻿using Unity.Burst;
+using Unity.Entities;
+using Unity.Collections;
+using Unity.Transforms;
+
+partial struct #SCRIPTNAME# : ISystem
+{
+    
+    //[BurstCompile]
+    //public void OnCreate(ref SystemState state)
+    //{
+
+    //}
+
+    [BurstCompile]
+    public void OnUpdate(ref SystemState state)
+    {
+        //#JOBNAME# #JOBNAME_CAMELCASE# = new #JOBNAME# { 
+                                                        // // set the job arguments here
+
+                                                        //};
+
+        // // schedule parallel uses job scheduler and if there is not enough jobs to split it will run on main thread
+        //#JOBNAME_CAMELCASE#.ScheduleParallel();
+
+
+        
+        // Single threaded approach
+        foreach ((
+            RefRO<LocalTransform> localTransform,
+            RefRO<#POSSIBLECOMPONENTNAME#> #POSSIBLECOMPONENTNAME_CAMELCASE#
+            )
+            in SystemAPI.Query<
+                RefRO<LocalTransform>,
+                RefRO<#POSSIBLECOMPONENTNAME#>
+            >()
+            )
+        {
+            
+        }
+    }
+}
+
+//[BurstCompile]
+//public partial struct #JOBNAME# : IJobEntity
+//{
+//    //in for RO ref for RW
+//    public void Execute(in LocalTransform localTransform, in #POSSIBLECOMPONENTNAME# #POSSIBLECOMPONENTNAME_CAMELCASE#)
+//    {
+        
+//    }
+//}
