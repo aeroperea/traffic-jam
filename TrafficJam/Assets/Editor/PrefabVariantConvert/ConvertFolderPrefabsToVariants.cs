@@ -6,9 +6,9 @@ using UnityEngine;
 
 public class ConvertFolderPrefabsToVariants : EditorWindow
 {
-    // minimal ui state
     private DefaultAsset _folder;
-    private GameObject _basePrefab;
+    private GameObject _basePrefab;              // optional; created if null
+    private string _baseName = "_BaseParent";    // name when creating
     private bool _includeSubfolders = false;
 
     [MenuItem("Tools/Prefabs/Convert Folder To Variants…")]
@@ -16,7 +16,6 @@ public class ConvertFolderPrefabsToVariants : EditorWindow
 
     private void OnGUI()
     {
-        // ui
         GUILayout.Label("source", EditorStyles.boldLabel);
         _folder = (DefaultAsset)EditorGUILayout.ObjectField("Folder", _folder, typeof(DefaultAsset), false);
         _includeSubfolders = EditorGUILayout.ToggleLeft("Include Subfolders", _includeSubfolders);
@@ -24,6 +23,7 @@ public class ConvertFolderPrefabsToVariants : EditorWindow
         GUILayout.Space(8);
         GUILayout.Label("base", EditorStyles.boldLabel);
         _basePrefab = (GameObject)EditorGUILayout.ObjectField("Base Prefab (empty parent)", _basePrefab, typeof(GameObject), false);
+        _baseName = EditorGUILayout.TextField(new GUIContent("Base Name (if creating)"), string.IsNullOrWhiteSpace(_baseName) ? "_BaseParent" : _baseName);
 
         GUILayout.Space(12);
         using (new EditorGUI.DisabledScope(!CanRun()))
@@ -40,31 +40,50 @@ public class ConvertFolderPrefabsToVariants : EditorWindow
         }
 
         GUILayout.Space(8);
-        EditorGUILayout.HelpBox("the base prefab should be an empty transform that will become the parent of each old root.\n" +
-                                "existing asset paths are preserved so references in scenes/prefabs remain valid.", MessageType.Info);
+        EditorGUILayout.HelpBox("if no base prefab is supplied, an empty one will be created in the selected folder using the name above.", MessageType.Info);
     }
 
     private bool CanRun()
     {
-        if (_folder == null || _basePrefab == null) return false;
-        var path = AssetDatabase.GetAssetPath(_basePrefab);
-        return PrefabUtility.IsPartOfPrefabAsset(_basePrefab) && path.EndsWith(".prefab");
+        if (_folder == null) return false;
+        if (_basePrefab != null)
+        {
+            var path = AssetDatabase.GetAssetPath(_basePrefab);
+            return PrefabUtility.IsPartOfPrefabAsset(_basePrefab) && path.EndsWith(".prefab");
+        }
+        return !string.IsNullOrWhiteSpace(_baseName);
+    }
+
+    private GameObject EnsureBasePrefab(string folderPath)
+    {
+        if (_basePrefab != null) return _basePrefab;
+
+        var desiredPath = Path.Combine(folderPath, _baseName.Trim() + ".prefab").Replace('\\', '/');
+        desiredPath = AssetDatabase.GenerateUniqueAssetPath(desiredPath);
+
+        var temp = new GameObject(_baseName.Trim());
+        var created = PrefabUtility.SaveAsPrefabAsset(temp, desiredPath);
+        Object.DestroyImmediate(temp);
+        _basePrefab = created;
+        AssetDatabase.Refresh();
+        return _basePrefab;
     }
 
     private void ConvertNow()
     {
-        var basePath = AssetDatabase.GetAssetPath(_basePrefab);
+        var folderPath = AssetDatabase.GetAssetPath(_folder);
+
+        // create base if missing
+        var baseObj = EnsureBasePrefab(folderPath);
+        var basePath = AssetDatabase.GetAssetPath(baseObj);
         var baseGuid = AssetDatabase.AssetPathToGUID(basePath);
 
-        var folderPath = AssetDatabase.GetAssetPath(_folder);
-        var search = _includeSubfolders ? "t:Prefab" : "t:Prefab";
-        var allPrefabGuids = AssetDatabase.FindAssets(search, new[] { folderPath });
+        var allPrefabGuids = AssetDatabase.FindAssets("t:Prefab", new[] { folderPath });
 
-        // filter: only prefabs under folder (respect subfolder toggle) and not the base itself
         var targets = allPrefabGuids
-            .Select(g => AssetDatabase.GUIDToAssetPath(g))
+            .Select(AssetDatabase.GUIDToAssetPath)
             .Where(p => p.EndsWith(".prefab"))
-            .Where(p => _includeSubfolders || Path.GetDirectoryName(p).Replace('\\','/') == folderPath)
+            .Where(p => _includeSubfolders || Path.GetDirectoryName(p).Replace('\\', '/') == folderPath)
             .Where(p => AssetDatabase.AssetPathToGUID(p) != baseGuid)
             .ToArray();
 
@@ -76,9 +95,9 @@ public class ConvertFolderPrefabsToVariants : EditorWindow
 
         try
         {
-            if (!UnityEditor.SceneManagement.EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
+            if (!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
             {
-                Debug.LogError("Conversion cancelled user didnt save scene");
+                Debug.LogError("conversion cancelled; user did not save scenes");
                 return;
             }
 
@@ -90,43 +109,41 @@ public class ConvertFolderPrefabsToVariants : EditorWindow
                 var path = targets[i];
                 EditorUtility.DisplayProgressBar("Converting To Variants", path, (float)i / targets.Length);
 
-                // open the old prefab contents (editable, not an instance)
-                var oldRoot = PrefabUtility.LoadPrefabContents(path);
-                if (oldRoot == null)
+                // stage: open prefab contents (isolated editing stage)
+                var stagedRoot = PrefabUtility.LoadPrefabContents(path);
+                if (stagedRoot == null)
                     continue;
 
-                // quick skip if it already looks like a variant of base (heuristic by comparing parent prefab)
-                var existingParent = PrefabUtility.GetCorrespondingObjectFromSource(oldRoot);
-                // not reliable for contents root; do explicit variant test:
-                bool alreadyVariant = PrefabUtility.IsAnyPrefabInstanceRoot(oldRoot) &&
-                                      PrefabUtility.GetPrefabAssetType(oldRoot) == PrefabAssetType.Variant;
+                // clone the staged root into the SCENE (not the contents stage)
+                var cloned = (GameObject)Object.Instantiate(stagedRoot);
+                cloned.name = "Model";
+
+                // IMPORTANT: unload the staged contents BEFORE parenting/overwriting
+                PrefabUtility.UnloadPrefabContents(stagedRoot);
 
                 // build an instance of base (keeps link so saving creates a VARIANT)
-                var baseInstance = (GameObject)PrefabUtility.InstantiatePrefab(_basePrefab);
+                var baseInstance = (GameObject)PrefabUtility.InstantiatePrefab(baseObj);
                 baseInstance.name = Path.GetFileNameWithoutExtension(path);
 
-                // reparent the old prefab contents under base instance
-                oldRoot.transform.SetParent(baseInstance.transform, false);
-                oldRoot.transform.SetAsFirstSibling();
-                oldRoot.name = "Model";
-
-                // ensure zeroed child
-                oldRoot.transform.localPosition = Vector3.zero;
-                oldRoot.transform.localRotation = Quaternion.identity;
-                oldRoot.transform.localScale = Vector3.one;
+                // parent the clone under base
+                cloned.transform.SetParent(baseInstance.transform, false);
+                cloned.transform.SetAsFirstSibling();
+                cloned.transform.localPosition = Vector3.zero;
+                cloned.transform.localRotation = Quaternion.identity;
+                cloned.transform.localScale = Vector3.one;
 
                 // save the base instance as the SAME asset path -> creates/overwrites as a VARIANT
                 PrefabUtility.SaveAsPrefabAsset(baseInstance, path, out bool success);
 
-                // cleanup temp objects
-                PrefabUtility.UnloadPrefabContents(oldRoot);
-                DestroyImmediate(baseInstance);
+                // cleanup temp scene objects
+                Object.DestroyImmediate(baseInstance);
+                if (cloned != null) Object.DestroyImmediate(cloned);
 
                 if (success) changed++;
             }
 
             EditorUtility.ClearProgressBar();
-            Debug.Log($"converted {changed} prefab(s) to variants of '{_basePrefab.name}'.");
+            Debug.Log($"converted {changed} prefab(s) to variants of '{baseObj.name}'.");
         }
         finally
         {
