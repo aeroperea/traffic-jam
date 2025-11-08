@@ -29,22 +29,22 @@ using System.Collections.Generic;
 //     public NativeList<MoveNode> value;
 // }
 
-// public struct MoveNode
-// {
-//     public half3 position;
-//     public half3 orientation;
-//     public byte nextIndex;
-// }
+public struct MoveNode
+{
+    public half3 position;
+    public half3 orientation;
+    public byte nextIndex;
+}
 
 public struct FuelTank : IComponentData
 {
-    public int fuelAmount;
-    public int maxFuel;
+public int fuelAmount;
+public int maxFuel;
 }
 
 public struct Road : IComponentData
 {
-    public int speedLimit;
+public int speedLimit;
 }
 
 // public struct Destination : IComponentData
