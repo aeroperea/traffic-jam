@@ -25,10 +25,11 @@ public struct Destination : IComponentData
 {
     public enum Type
     {
-        House, GroceryStore, GasStation, Stadium,
-        Restaurant, Factory,
-        Hospital, Auto_Service,
-        Bar, Shop
+        House, GroceryStore, 
+        GasStation, Stadium,
+        Restaurant, Factory, 
+        Hospital, Auto_Service, 
+        Shop,
     }
     public Type type;
     public int2 gridCoord;

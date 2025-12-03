@@ -1,0 +1,70 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Unity Projects\\AI\\traffic-jam\\TrafficJam\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{BF975900-56CE-8A79-10A2-0BA724011EF7}|Assembly-CSharp.csproj|c:\\unity projects\\ai\\traffic-jam\\trafficjam\\assets\\scripts\\dots\\authoring\\destinationauthoringauthoring.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BF975900-56CE-8A79-10A2-0BA724011EF7}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\dots\\authoring\\destinationauthoringauthoring.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C73EF469-6A48-254A-F234-B3E1B0069468}|Assembly-CSharp-Editor.csproj|c:\\unity projects\\ai\\traffic-jam\\trafficjam\\assets\\editor\\prefabvariantconvert\\convertfolderprefabstovariants.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C73EF469-6A48-254A-F234-B3E1B0069468}|Assembly-CSharp-Editor.csproj|solutionrelative:assets\\editor\\prefabvariantconvert\\convertfolderprefabstovariants.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Unity Projects\\AI\\traffic-jam\\TrafficJam\\Assets\\Editor\\PrefabVariantConvert\\PrefabInstanceTransformDebugger.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Assets\\Editor\\PrefabVariantConvert\\PrefabInstanceTransformDebugger.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "DestinationAUthoringAuthoring.cs",
+              "DocumentMoniker": "C:\\Unity Projects\\AI\\traffic-jam\\TrafficJam\\Assets\\Scripts\\DOTS\\Authoring\\DestinationAUthoringAuthoring.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\DOTS\\Authoring\\DestinationAUthoringAuthoring.cs",
+              "ToolTip": "C:\\Unity Projects\\AI\\traffic-jam\\TrafficJam\\Assets\\Scripts\\DOTS\\Authoring\\DestinationAUthoringAuthoring.cs",
+              "RelativeToolTip": "Assets\\Scripts\\DOTS\\Authoring\\DestinationAUthoringAuthoring.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACAAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-03T08:02:31.674Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "PrefabInstanceTransformDebugger.cs",
+              "DocumentMoniker": "C:\\Unity Projects\\AI\\traffic-jam\\TrafficJam\\Assets\\Editor\\PrefabVariantConvert\\PrefabInstanceTransformDebugger.cs",
+              "RelativeDocumentMoniker": "Assets\\Editor\\PrefabVariantConvert\\PrefabInstanceTransformDebugger.cs",
+              "ToolTip": "C:\\Unity Projects\\AI\\traffic-jam\\TrafficJam\\Assets\\Editor\\PrefabVariantConvert\\PrefabInstanceTransformDebugger.cs",
+              "RelativeToolTip": "Assets\\Editor\\PrefabVariantConvert\\PrefabInstanceTransformDebugger.cs",
+              "ViewState": "AgIAAJQAAAAAAAAAAAA9wL4AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-03T07:05:42.127Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "ConvertFolderPrefabsToVariants.cs",
+              "DocumentMoniker": "C:\\Unity Projects\\AI\\traffic-jam\\TrafficJam\\Assets\\Editor\\PrefabVariantConvert\\ConvertFolderPrefabsToVariants.cs",
+              "RelativeDocumentMoniker": "Assets\\Editor\\PrefabVariantConvert\\ConvertFolderPrefabsToVariants.cs",
+              "ToolTip": "C:\\Unity Projects\\AI\\traffic-jam\\TrafficJam\\Assets\\Editor\\PrefabVariantConvert\\ConvertFolderPrefabsToVariants.cs",
+              "RelativeToolTip": "Assets\\Editor\\PrefabVariantConvert\\ConvertFolderPrefabsToVariants.cs",
+              "ViewState": "AgIAAIQAAAAAAAAAAAAswJsAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-03T02:33:27.861Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
